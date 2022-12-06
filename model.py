@@ -50,12 +50,11 @@ class Model(nn.Module):
 
     def forward(self, batch):
         content, labels  = batch
-        logits = self.score_input(content)    
+        logits = self.score_input(content) 
         labels = torch.tensor(labels, dtype=torch.long).to(logits.device)
         loss = self.ce_loss_func(logits, labels)
         preds_cls = list(torch.argmax(logits, 1).cpu().numpy())
         positive_probability = logits[:, 1]
-        
         preds = torch.argmax(positive_probability.reshape(-1, self.num_choices), 1)
         preds = list(preds.cpu().numpy())
         return loss, preds, preds_cls

@@ -19,9 +19,9 @@ from sklearn.metrics import accuracy_score, f1_score
 
 def configure_dataloaders(train_batch_size = 4 ,eval_batch_size = 4, shuffle = False):
     
-    json_path_train = "/content/DeepNLP_Project/persian_data/fake_train.jsonl"
-    json_path_valid = "/content/DeepNLP_Project/persian_data/valid.jsonl"
-    json_path_test = "/content/DeepNLP_Project/persian_data/test.jsonl"
+    json_path_train = "/content/DNLP_project/persian_data/train.jsonl"
+    json_path_valid = "/content/DNLP_project/persian_data/valid.jsonl"
+    json_path_test = "/content/DNLP_project/persian_data/test.jsonl"
     
     train_dataset = PersianDataset(json_path_train, shuffle = True )
     train_loader = DataLoader(train_dataset, shuffle= shuffle, batch_size=train_batch_size, collate_fn=train_dataset.collate_fn)
@@ -75,7 +75,9 @@ def train_or_eval_model(model, dataloader, optimizer=None, split="Train"):
     for batch in tqdm(dataloader, leave=False):
         if split=="Train":
             optimizer.zero_grad()
+
         content, l_cls = batch
+        #l_cls = batch
         loss, p, p_cls = model(batch)
         
         preds.append(p)
@@ -88,9 +90,9 @@ def train_or_eval_model(model, dataloader, optimizer=None, split="Train"):
             
         losses.append(loss.item())
 
-    print('preds', preds, len(preds))
-    print('preds_cls', preds_cls)
-    print('labels_cls GROUND TRUTH',labels_cls)
+    # print('preds', preds, len(preds))
+    # print('preds_cls', preds_cls)
+    # print('labels_cls GROUND TRUTH',labels_cls)
 
     avg_loss = round(np.mean(losses), 4)
     
@@ -120,7 +122,7 @@ def train_or_eval_model(model, dataloader, optimizer=None, split="Train"):
         return avg_loss, acc, instance_acc, f1
     
     elif "Test" in split:
-        mapper = {0: "A", 1: "B", 2: "C", 3: "D", 4: "E", 5: "F", 6: "G", 7: "H"}
+        mapper = {0: "1", 1: "2", 2: "3", 3: "4"}
         instance_preds = [item for sublist in preds for item in sublist]
         instance_preds = [mapper[item] for item in instance_preds]
         print ("Test preds frequency:", dict(pd.Series(instance_preds).value_counts()))
@@ -163,7 +165,7 @@ if __name__ == "__main__":
         num_choices=num_choices
     ).cuda()
     
-    sep_token = model.tokenizer.sep_token
+    #sep_token = model.tokenizer.sep_token
     
     optimizer = configure_optimizer(model, args)
     
@@ -176,17 +178,17 @@ if __name__ == "__main__":
     vars(args)["exp_id"] = exp_id
     rs = "Acc: {}"
     
-    path = "/content/DeepNLP_Project/saved/persian_dataset/" + exp_id + "/" + name.replace("/", "-")
-    Path("/content/DeepNLP_Project/saved/persian_dataset/" + exp_id + "/").mkdir(parents=True, exist_ok=True)
+    path = "/content/DNLP_project/saved/persian_dataset/" + exp_id + "/" + name.replace("/", "-")
+    Path("/content/DNLP_project/saved/persian_dataset/" + exp_id + "/").mkdir(parents=True, exist_ok=True)
     
-    fname = "/content/DeepNLP_Project/saved/persian_dataset/" + exp_id + "/" + "args.txt"
+    fname = "/content/DNLP_project/saved/persian_dataset/" + exp_id + "/" + "args.txt"
     
     f = open(fname, "a")
     f.write(str(args) + "\n\n")
     f.close()
        
-    Path("/content/DeepNLP_Project/results/persian_dataset/").mkdir(parents=True, exist_ok=True)
-    lf_name = "/content/DeepNLP_Project/results/persian_dataset/" + name.replace("/", "-") + ".txt"
+    Path("/content/DNLP_project/results/persian_dataset/").mkdir(parents=True, exist_ok=True)
+    lf_name = "/content/DNLP_project/results/persian_dataset/" + name.replace("/", "-") + ".txt"
     lf = open(lf_name, "a")
     lf.write(str(args) + "\n\n")
     lf.close()

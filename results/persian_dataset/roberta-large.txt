@@ -1,0 +1,16 @@
+Namespace(adam_epsilon=1e-08, bs=4, epochs=1, eval_bs=4, exp_id='1670346014', lr=3e-06, name='roberta-large', num_choices=4, shuffle=False, warm_up_steps=0, wd=0.0)
+
+Namespace(adam_epsilon=1e-08, bs=4, epochs=1, eval_bs=4, exp_id='1670346140', lr=3e-06, name='roberta-large', num_choices=4, shuffle=False, warm_up_steps=0, wd=0.0)
+
+Epoch 1: Loss: Train 0.5892; Val 0.5641
+Classification Acc: Train 0.7332; Val 0.75
+Classification Macro F1: Train 0.4617; Val 0.4286
+Instance Acc: Val 0.2662
+
+----------------------------------------------------------------------------------------------------
+Namespace(adam_epsilon=1e-08, bs=4, epochs=1, eval_bs=4, exp_id='1670346601', lr=3e-06, name='roberta-large', num_choices=4, shuffle=False, warm_up_steps=0, wd=0.0)
+
+Namespace(adam_epsilon=1e-08, bs=4, epochs=1, eval_bs=4, exp_id='1670346670', lr=3e-06, name='roberta-large', num_choices=4, shuffle=False, warm_up_steps=0, wd=0.0)
+
+Namespace(adam_epsilon=1e-08, bs=4, epochs=8, eval_bs=4, exp_id='1670346952', lr=3e-06, name='roberta-large', num_choices=4, shuffle=False, warm_up_steps=0, wd=0.0)
+

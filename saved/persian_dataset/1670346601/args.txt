@@ -1,0 +1,2 @@
+Namespace(adam_epsilon=1e-08, bs=4, epochs=1, eval_bs=4, exp_id='1670346601', lr=3e-06, name='roberta-large', num_choices=4, shuffle=False, warm_up_steps=0, wd=0.0)
+
