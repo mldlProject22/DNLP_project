@@ -76,7 +76,6 @@ def train_or_eval_model(model, dataloader, optimizer=None, split="Train"):
         if split=="Train":
             optimizer.zero_grad()
         content, l_cls = batch
-        #l_cls = batch
         loss, p, p_cls = model(batch)
         
         preds.append(p)
