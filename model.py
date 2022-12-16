@@ -1,10 +1,12 @@
 import json
 import random
 import numpy as np
+from pandas.core.arrays import string_
 import torch
 import transformers
 import torch.nn as nn
 from transformers import AutoTokenizer, AutoModelForSequenceClassification
+from transformers import AutoTokenizer, AutoModelForQuestionAnswering #for SajjadAyoubi/bert-base-fa-qa
 
 class Model(nn.Module):
     def __init__(
@@ -17,8 +19,10 @@ class Model(nn.Module):
         self.name = name
         self.num_choices = num_choices
         self.tokenizer = AutoTokenizer.from_pretrained(name, use_fast=True)
-        self.model = AutoModelForSequenceClassification.from_pretrained(name)
-        
+        if name == "SajjadAyoubi/bert-base-fa-qa":
+          self.model = AutoModelForQuestionAnswering.from_pretrained(self.name)
+        else:
+          self.model = AutoModelForSequenceClassification.from_pretrained(self.name)
         self.max_length = 512
         
         '''if to check which model we are using, robertaLarge, or deberta'''
@@ -46,7 +50,10 @@ class Model(nn.Module):
             batch["input_ids"].to(self.model.device), batch["attention_mask"].to(self.model.device),
             output_hidden_states=True
         )
-        return out["logits"]
+        if self.name == "SajjadAyoubi/bert-base-fa-qa":
+          return out["end_logits"]
+        else:
+          return out["logits"]
 
     def forward(self, batch):
         content, labels  = batch

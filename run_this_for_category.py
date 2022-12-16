@@ -24,15 +24,16 @@ def configure_dataloaders(train_batch_size = 4 ,eval_batch_size = 4, shuffle = F
     json_path_test = "/content/DNLP_project/persian_data/test.jsonl"
     
     train_dataset = PersianDataset(json_path_train, sep_token=sep_token, input_format=input_format,shuffle = True)
-    train_loader = DataLoader(train_dataset, shuffle= shuffle, batch_size=train_batch_size, collate_fn=train_dataset.collate_fn)
+    train_loader = DataLoader(train_dataset, shuffle= True, batch_size=train_batch_size, collate_fn=train_dataset.collate_fn)
 
     val_dataset = PersianDataset(json_path_valid, sep_token=sep_token, input_format=input_format,shuffle = False)
     val_loader = DataLoader(val_dataset, shuffle=False, batch_size=eval_batch_size, collate_fn=val_dataset.collate_fn)
     
     test_dataset = PersianDataset(json_path_test, sep_token=sep_token, input_format=input_format,shuffle = False)
+    labels_gt = test_dataset.get_labels_gt()
     test_loader = DataLoader(test_dataset, shuffle=False, batch_size=eval_batch_size, collate_fn=val_dataset.collate_fn)
 
-    return train_loader, val_loader, test_loader
+    return train_loader, val_loader, test_loader,labels_gt
 
 def configure_optimizer(model, args):
     """Prepare optimizer and schedule (linear warmup and decay)"""
@@ -65,7 +66,7 @@ def configure_scheduler(optimizer, num_training_steps, args):
     )    
     return lr_scheduler
 
-def train_or_eval_model(model, dataloader, optimizer=None, split="Train"):
+def train_or_eval_model(model, dataloader, optimizer=None, split="Train", labels_gt = None):
     losses, preds, preds_cls, labels_cls,  = [], [], [], []
     if split=="Train":
         model.train()
@@ -77,7 +78,9 @@ def train_or_eval_model(model, dataloader, optimizer=None, split="Train"):
             optimizer.zero_grad()
 
         content, l_cls = batch
+          
         #l_cls = batch
+        
         loss, p, p_cls = model(batch)
         
         preds.append(p)
@@ -123,10 +126,13 @@ def train_or_eval_model(model, dataloader, optimizer=None, split="Train"):
     
     elif "Test" in split:
         mapper = {0: "1", 1: "2", 2: "3", 3: "4"}
-        instance_preds = [item for sublist in preds for item in sublist]
+        instance_preds = [item for sublist in preds for item in sublist] 
         instance_preds = [mapper[item] for item in instance_preds]
+        instance_acc = round(accuracy_score(labels_gt,instance_preds))
+        print("TEST INSTANCE ACC:", instance_acc)
         print ("Test preds frequency:", dict(pd.Series(instance_preds).value_counts()))
-        return instance_preds
+
+        return instance_preds, instance_acc
 
 if __name__ == "__main__":
 
@@ -200,10 +206,10 @@ if __name__ == "__main__":
     for e in range(epochs):
         torch.cuda.empty_cache() 
 
-        train_loader, val_loader, test_loader = configure_dataloaders(train_batch_size, eval_batch_size, shuffle,sep_token =sep_token, input_format=input_format)
-        train_loss, train_acc, train_f1 = train_or_eval_model(model, train_loader, optimizer, "Train")
-        val_loss, val_acc, val_ins_acc, val_f1 = train_or_eval_model(model, val_loader, split="Val")
-        test_preds = train_or_eval_model(model, test_loader, split="Test")
+        train_loader, val_loader, test_loader, labels_gt = configure_dataloaders(train_batch_size, eval_batch_size, shuffle,sep_token =sep_token, input_format=input_format)
+        train_loss, train_acc, train_f1 = train_or_eval_model(model, train_loader, optimizer, "Train", labels_gt = labels_gt)
+        val_loss, val_acc, val_ins_acc, val_f1 = train_or_eval_model(model, val_loader, split="Val", labels_gt = labels_gt)
+        test_preds, test_ins_acc = train_or_eval_model(model, test_loader, split="Test", labels_gt = labels_gt)
         
         with open(path + "-epoch-" + str(e+1) + ".txt", "w") as f:
             f.write("\n".join(list(test_preds)))
@@ -212,11 +218,13 @@ if __name__ == "__main__":
         y1 = "Classification Acc: Train {}; Val {}".format(train_acc, val_acc)
         y2 = "Classification Macro F1: Train {}; Val {}".format(train_f1, val_f1)
         z = "Instance Acc: Val {}".format(val_ins_acc)
+        z2 = "Instance Acc: TEST {}".format(test_ins_acc)
             
         print (x)
         print (y1)
         print (y2)
         print (z)
+        print(z2)
 
         lf = open(lf_name, "a")
         lf.write(x + "\n" + y1 + "\n" + y2 + "\n" + z + "\n\n")

@@ -16,11 +16,15 @@ class PersianDataset(Dataset):
 
         ''' content : list() = all the possible combinations (question, answer)
             labels : list() = list with 0 and 1, 1 where we have the correct answer'''
+        
+
         content, labels = [], []
         x = open(f).readlines()
         if shuffle:
             random.shuffle(x)
         
+        self.corr_ans_ids = list()
+
         for line in x:
             '''create a python dict from this line of the jsonl'''
             instance = json.loads(line)
@@ -97,6 +101,9 @@ class PersianDataset(Dataset):
     def __getitem__(self,index):
         s1,s2 = self.content[index], self.labels[index]
         return s1,s2
+
+    def get_labels_gt(self):
+      return self.corr_ans_ids
     
     def collate_fn(self, data):
         dat = pd.DataFrame(data)
