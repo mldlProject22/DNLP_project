@@ -41,6 +41,7 @@ class PersianDataset(Dataset):
                 question = instance["question"]
                 '''id (increasing number from 1 to 4) of the correct answer'''
                 correct_answer_id = int(instance["answer"])
+                self.corr_ans_ids.append(correct_answer_id)
                 '''create all the possible combinations (question, answer)'''
 
                 c = instance["category"]

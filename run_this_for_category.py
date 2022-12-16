@@ -125,10 +125,13 @@ def train_or_eval_model(model, dataloader, optimizer=None, split="Train", labels
         return avg_loss, acc, instance_acc, f1
     
     elif "Test" in split:
-        mapper = {0: "1", 1: "2", 2: "3", 3: "4"}
+        #mapper = {0: "1", 1: "2", 2: "3", 3: "4"}
+        mapper = {0: 1, 1: 2, 2: 3, 3: 4}
         instance_preds = [item for sublist in preds for item in sublist] 
         instance_preds = [mapper[item] for item in instance_preds]
-        instance_acc = round(accuracy_score(labels_gt,instance_preds))
+        print('labels gt:', labels_gt)
+        print('instance pred:', instance_preds)
+        instance_acc = accuracy_score(labels_gt,instance_preds)
         print("TEST INSTANCE ACC:", instance_acc)
         print ("Test preds frequency:", dict(pd.Series(instance_preds).value_counts()))
 
@@ -190,15 +193,15 @@ if __name__ == "__main__":
     
     fname = "/content/DNLP_project/saved/persian_dataset/" + exp_id + "/" + "args.txt"
     
-    f = open(fname, "a")
-    f.write(str(args) + "\n\n")
-    f.close()
+    # f = open(fname, "a")
+    # f.write(str(args) + "\n\n")
+    # f.close()
        
-    Path("/content/DNLP_project/results/persian_dataset/").mkdir(parents=True, exist_ok=True)
-    lf_name = "/content/DNLP_project/results/persian_dataset/" + name.replace("/", "-") + ".txt"
-    lf = open(lf_name, "a")
-    lf.write(str(args) + "\n\n")
-    lf.close()
+    # Path("/content/DNLP_project/results/persian_dataset/").mkdir(parents=True, exist_ok=True)
+    # lf_name = "/content/DNLP_project/results/persian_dataset/" + name.replace("/", "-") + ".txt"
+    # lf = open(lf_name, "a")
+    # lf.write(str(args) + "\n\n")
+    # lf.close()
 
     #wandb.init(project="persian_dataset-" + sp)
     #wandb.watch(model)
@@ -211,8 +214,8 @@ if __name__ == "__main__":
         val_loss, val_acc, val_ins_acc, val_f1 = train_or_eval_model(model, val_loader, split="Val", labels_gt = labels_gt)
         test_preds, test_ins_acc = train_or_eval_model(model, test_loader, split="Test", labels_gt = labels_gt)
         
-        with open(path + "-epoch-" + str(e+1) + ".txt", "w") as f:
-            f.write("\n".join(list(test_preds)))
+        # with open(path + "-epoch-" + str(e+1) + ".txt", "w") as f:
+        #     f.write("\n".join(list(test_preds)))
         
         x = "Epoch {}: Loss: Train {}; Val {}".format(e+1, train_loss, val_loss)
         y1 = "Classification Acc: Train {}; Val {}".format(train_acc, val_acc)
@@ -226,14 +229,14 @@ if __name__ == "__main__":
         print (z)
         print(z2)
 
-        lf = open(lf_name, "a")
-        lf.write(x + "\n" + y1 + "\n" + y2 + "\n" + z + "\n\n")
-        lf.close()
+    #     lf = open(lf_name, "a")
+    #     lf.write(x + "\n" + y1 + "\n" + y2 + "\n" + z + "\n\n")
+    #     lf.close()
 
-        f = open(fname, "a")
-        f.write(x + "\n" + y1 + "\n" + y2 + "\n" + z + "\n\n")
-        f.close()
+    #     f = open(fname, "a")
+    #     f.write(x + "\n" + y1 + "\n" + y2 + "\n" + z + "\n\n")
+    #     f.close()
         
-    lf = open(lf_name, "a")
-    lf.write("-"*100 + "\n")
-    lf.close()
+    # lf = open(lf_name, "a")
+    # lf.write("-"*100 + "\n")
+    # lf.close()

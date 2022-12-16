@@ -14,3 +14,21 @@ Namespace(adam_epsilon=1e-08, bs=4, epochs=1, eval_bs=4, exp_id='1671187173', in
 
 Namespace(adam_epsilon=1e-08, bs=4, epochs=1, eval_bs=4, exp_id='1671187203', input_format='0', lr=3e-06, name='SajjadAyoubi/bert-base-fa-qa', num_choices=4, shuffle=False, warm_up_steps=0, wd=0.0)
 
+Namespace(adam_epsilon=1e-08, bs=4, epochs=1, eval_bs=4, exp_id='1671187669', input_format='0', lr=3e-06, name='SajjadAyoubi/bert-base-fa-qa', num_choices=4, shuffle=False, warm_up_steps=0, wd=0.0)
+
+Epoch 1: Loss: Train 0.6019; Val 0.5741
+Classification Acc: Train 0.7463; Val 0.75
+Classification Macro F1: Train 0.217; Val 0.4286
+Instance Acc: Val 0.259
+
+----------------------------------------------------------------------------------------------------
+Namespace(adam_epsilon=1e-08, bs=4, epochs=1, eval_bs=4, exp_id='1671188129', input_format='0', lr=3e-06, name='SajjadAyoubi/bert-base-fa-qa', num_choices=4, shuffle=False, warm_up_steps=0, wd=0.0)
+
+Epoch 1: Loss: Train 0.6028; Val 0.5633
+Classification Acc: Train 0.7451; Val 0.75
+Classification Macro F1: Train 0.2886; Val 0.4286
+Instance Acc: Val 0.3381
+
+----------------------------------------------------------------------------------------------------
+Namespace(adam_epsilon=1e-08, bs=4, epochs=1, eval_bs=4, exp_id='1671188389', input_format='0', lr=3e-06, name='SajjadAyoubi/bert-base-fa-qa', num_choices=4, shuffle=False, warm_up_steps=0, wd=0.0)
+
